@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>의견</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .delete-button {
+            padding: 5px 10px;
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .delete-button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>의견</h2>
+    <h4 id="studentId_output"></h4>
+    <textarea id="commentInput" placeholder="의견을 작성해주세요..." required></textarea>
+    <button onclick="saveComment()">의견 저장</button>
+    <div id="commentOutput"></div>
+    <div class="stats">
+        <span id="views">조회수 : 0</span>
+        <span id="likes">  ♥ : 0</span>
+    </div>
+    <button class="delete-button" onclick="deleteComments()">의견 모두 삭제</button>
+</div>
+
+<script>
+    window.onload = function() {
+        var studentId_output = localStorage.getItem("studentId");
+        if (studentId_output) {
+            var studentIdOutput = document.getElementById("studentId_output");
+            studentIdOutput.innerText = "학번 : " + studentId_output;
+        }
+        loadComments();
+    };
+
+    function saveComment() {
+        var commentInput = document.getElementById("commentInput").value;
+        if (commentInput.trim() !== "") {
+            var comments = localStorage.getItem("comments") ? JSON.parse(localStorage.getItem("comments")) : [];
+            comments.push(commentInput);
+            localStorage.setItem("comments", JSON.stringify(comments));
+            loadComments();
+            document.getElementById("commentInput").value = "";
+        }
+    }
+
+    function loadComments() {
+        var commentOutput = document.getElementById("commentOutput");
+        var comments = localStorage.getItem("comments") ? JSON.parse(localStorage.getItem("comments")) : [];
+        if (comments.length > 0) {
+            var commentsHTML = "<h3>의견 목록</h3><ul>";
+            comments.forEach(function(comment) {
+                commentsHTML += "<li>" + comment + "</li>";
+            });
+            commentsHTML += "</ul>";
+            commentOutput.innerHTML = commentsHTML;
+        } else {
+            commentOutput.innerHTML = "<p>저장된 의견이 없습니다.</p>";
+        }
+    }
+
+    function deleteComments() {
+        localStorage.removeItem("comments");
+        loadComments();
+    }
+
+    function updateStats() {
+        var viewsElement = document.getElementById("views");
+        viewsElement.innerText = "조회수 : " + views;
+
+        var likesElement = document.getElementById("likes");
+        likesElement.innerText = "  ♥ : " + likes;
+    }
+</script>
+
+</body>
+</html>
